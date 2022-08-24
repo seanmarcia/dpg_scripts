@@ -5,40 +5,40 @@ const cheerio = require("cheerio");
 const fetch = require("node-fetch");
 
 const SDGS = ['No Poverty',
-              'Zero Hunger',
-              'Good Health and Well-being',
-              'Quality Education',
-              'Gender Equality',
-              'Clean Water and Sanitation',
-              'Affordable and Clean Energy',
-              'Decent Work and Economic Growth',
-              'Industry, Innovation and Infrastructure',
-              'Reduced Inequality',
-              'Sustainable Cities and Communities',
-              'Responsible Consumption and Production',
-              'Climate Action',
-              'Life Below Water',
-              'Life on Land',
-              'Peace and Justice Strong Institutions',
-              'Partnerships to achieve the Goal']
+  'Zero Hunger',
+  'Good Health and Well-being',
+  'Quality Education',
+  'Gender Equality',
+  'Clean Water and Sanitation',
+  'Affordable and Clean Energy',
+  'Decent Work and Economic Growth',
+  'Industry, Innovation and Infrastructure',
+  'Reduced Inequality',
+  'Sustainable Cities and Communities',
+  'Responsible Consumption and Production',
+  'Climate Action',
+  'Life Below Water',
+  'Life on Land',
+  'Peace and Justice Strong Institutions',
+  'Partnerships to achieve the Goal']
 
 const sdgColors = ['#E5243B',
-                   '#DDA63A',
-                   '#4C9F38',
-                   '#C5192D',
-                   '#FF3A21',
-                   '#26BDE2',
-                   '#FCC30B',
-                   '#A21942',
-                   '#FD6925',
-                   '#DD1367',
-                   '#FD9D24',
-                   '#BF8B2E',
-                   '#3F7E44',
-                   '#0A97D9',
-                   '#56C02B',
-                   '#00689D',
-                   '#19486A']
+  '#DDA63A',
+  '#4C9F38',
+  '#C5192D',
+  '#FF3A21',
+  '#26BDE2',
+  '#FCC30B',
+  '#A21942',
+  '#FD6925',
+  '#DD1367',
+  '#FD9D24',
+  '#BF8B2E',
+  '#3F7E44',
+  '#0A97D9',
+  '#56C02B',
+  '#00689D',
+  '#19486A']
 
 path = '../../../publicgoods-candidates/nominees'
 pathHtml = '../../../publicgoods-website/registry/index.html';
@@ -54,107 +54,107 @@ destRoadmapHtml = '../roadmap/public/index.html';
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-  
-let candidates=[];
+
+let candidates = [];
 
 glob(path + '/*.json', {}, async (err, files) => {
-  for (var i=0; i<files.length; i++) {
+  for (var i = 0; i < files.length; i++) {
     candidates.push(JSON.parse(fs.readFileSync(files[i], 'utf8')));
   }
-  let combos = [0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  let combos = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   // Initialize SDG array to count occurences in candidates
   let sdgs = new Array(17).fill(0);
   // Initialize type array to count occurences in candidates
-  const TYPE1='software';
-  const TYPE2='data';
-  const TYPE3='standard';
-  const TYPE4='content';
+  const TYPE1 = 'software';
+  const TYPE2 = 'data';
+  const TYPE3 = 'standard';
+  const TYPE4 = 'content';
   let types = {};
-  types[TYPE1]=0;
-  types[TYPE2]=0;
-  types[TYPE3]=0;
-  types[TYPE4]=0;
+  types[TYPE1] = 0;
+  types[TYPE2] = 0;
+  types[TYPE3] = 0;
+  types[TYPE4] = 0;
   let vettedDPGs = 0;
   // Iterate over candidates, and over each nested array and count
-  candidates.forEach(function(e) {
-    e['SDGs'].forEach(function(d){
-      sdgs[d['SDGNumber']-1]++;
+  candidates.forEach(function (e) {
+    e['SDGs'].forEach(function (d) {
+      sdgs[d['SDGNumber'] - 1]++;
     })
-    e['type'].forEach(function(d){
+    e['type'].forEach(function (d) {
       types[d]++;
     })
-    if     ( e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)){ combos[0]++;}
-    else if(!e['type'].includes(TYPE1) &&  e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)){ combos[1]++;}
-    else if(!e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) &&  e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)){ combos[2]++;}
-    else if( e['type'].includes(TYPE1) &&  e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)){ combos[3]++;}
-    else if( e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) &&  e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)){ combos[4]++;}
-    else if(!e['type'].includes(TYPE1) &&  e['type'].includes(TYPE2) &&  e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)){ combos[5]++;}
-    else if( e['type'].includes(TYPE1) &&  e['type'].includes(TYPE2) &&  e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)){ combos[6]++;}
-    else if( e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) &&  e['type'].includes(TYPE4)){ combos[7]++;}
-    else if(!e['type'].includes(TYPE1) &&  e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) &&  e['type'].includes(TYPE4)){ combos[8]++;}
-    else if(!e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) &&  e['type'].includes(TYPE3) &&  e['type'].includes(TYPE4)){ combos[9]++;}
-    else if( e['type'].includes(TYPE1) &&  e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) &&  e['type'].includes(TYPE4)){ combos[10]++;}
-    else if( e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) &&  e['type'].includes(TYPE3) &&  e['type'].includes(TYPE4)){ combos[11]++;}
-    else if(!e['type'].includes(TYPE1) &&  e['type'].includes(TYPE2) &&  e['type'].includes(TYPE3) &&  e['type'].includes(TYPE4)){ combos[12]++;}
-    else if( e['type'].includes(TYPE1) &&  e['type'].includes(TYPE2) &&  e['type'].includes(TYPE3) &&  e['type'].includes(TYPE4)){ combos[13]++;}
+    if (e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)) { combos[0]++; }
+    else if (!e['type'].includes(TYPE1) && e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)) { combos[1]++; }
+    else if (!e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) && e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)) { combos[2]++; }
+    else if (e['type'].includes(TYPE1) && e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)) { combos[3]++; }
+    else if (e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) && e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)) { combos[4]++; }
+    else if (!e['type'].includes(TYPE1) && e['type'].includes(TYPE2) && e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)) { combos[5]++; }
+    else if (e['type'].includes(TYPE1) && e['type'].includes(TYPE2) && e['type'].includes(TYPE3) && !e['type'].includes(TYPE4)) { combos[6]++; }
+    else if (e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && e['type'].includes(TYPE4)) { combos[7]++; }
+    else if (!e['type'].includes(TYPE1) && e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && e['type'].includes(TYPE4)) { combos[8]++; }
+    else if (!e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) && e['type'].includes(TYPE3) && e['type'].includes(TYPE4)) { combos[9]++; }
+    else if (e['type'].includes(TYPE1) && e['type'].includes(TYPE2) && !e['type'].includes(TYPE3) && e['type'].includes(TYPE4)) { combos[10]++; }
+    else if (e['type'].includes(TYPE1) && !e['type'].includes(TYPE2) && e['type'].includes(TYPE3) && e['type'].includes(TYPE4)) { combos[11]++; }
+    else if (!e['type'].includes(TYPE1) && e['type'].includes(TYPE2) && e['type'].includes(TYPE3) && e['type'].includes(TYPE4)) { combos[12]++; }
+    else if (e['type'].includes(TYPE1) && e['type'].includes(TYPE2) && e['type'].includes(TYPE3) && e['type'].includes(TYPE4)) { combos[13]++; }
 
-    if(e['stage']=='DPG') {
+    if (e['stage'] == 'DPG') {
       vettedDPGs++;
     }
   })
 
   // Prepare data for chart
-  let sdgData = { name: 'SDGs', children: []};
-  for(let i=0; i < sdgs.length; i++) {
+  let sdgData = { name: 'SDGs', children: [] };
+  for (let i = 0; i < sdgs.length; i++) {
     if (sdgs[i]) {
-      sdgData['children'].push({name: i+1, value: sdgs[i]});
+      sdgData['children'].push({ name: i + 1, value: sdgs[i] });
     }
   }
 
   var sets = [
-                {sets: [1], size: types[TYPE1], value: types[TYPE1], label: TYPE1},
-                {sets: [2], size: types[TYPE2], value: types[TYPE2], label: TYPE2},
-                {sets: [3], size: types[TYPE3], value: types[TYPE3], label: TYPE3},
-                {sets: [4], size: types[TYPE4], value: types[TYPE4], label: TYPE4},
-                {sets: [1, 2], size: combos[3], value: combos[3]},
-                {sets: [1, 3], size: combos[4], value: combos[4]},
-                {sets: [1, 4], size: combos[7], value: combos[7]},
-                {sets: [2, 3], size: combos[5], value: combos[5]},
-                {sets: [2, 4], size: combos[8], value: combos[8]},
-                {sets: [3, 4], size: combos[9], value: combos[9]},
-                {sets: [1, 2, 3], size: combos[6], value: combos[6]},
-                {sets: [1, 2, 4], size: combos[10], value: combos[10]},
-                {sets: [1, 3, 4], size: combos[11], value: combos[11]},
-                {sets: [2, 3 ,4], size: combos[12], value: combos[12]},
-                {sets: [1, 2, 3, 4], size: combos[13], value: combos[13]}
-                ];
+    { sets: [1], size: types[TYPE1], value: types[TYPE1], label: TYPE1 },
+    { sets: [2], size: types[TYPE2], value: types[TYPE2], label: TYPE2 },
+    { sets: [3], size: types[TYPE3], value: types[TYPE3], label: TYPE3 },
+    { sets: [4], size: types[TYPE4], value: types[TYPE4], label: TYPE4 },
+    { sets: [1, 2], size: combos[3], value: combos[3] },
+    { sets: [1, 3], size: combos[4], value: combos[4] },
+    { sets: [1, 4], size: combos[7], value: combos[7] },
+    { sets: [2, 3], size: combos[5], value: combos[5] },
+    { sets: [2, 4], size: combos[8], value: combos[8] },
+    { sets: [3, 4], size: combos[9], value: combos[9] },
+    { sets: [1, 2, 3], size: combos[6], value: combos[6] },
+    { sets: [1, 2, 4], size: combos[10], value: combos[10] },
+    { sets: [1, 3, 4], size: combos[11], value: combos[11] },
+    { sets: [2, 3, 4], size: combos[12], value: combos[12] },
+    { sets: [1, 2, 3, 4], size: combos[13], value: combos[13] }
+  ];
 
   // Add total for types to get percentages below
   let t = 0;
-  for(var key in types){
+  for (var key in types) {
     t += types[key];
   }
 
   // Compute type as percetage
   let type = {};
   for (var key in types) {
-    type[key]=Math.round(types[key]/t*100);
+    type[key] = Math.round(types[key] / t * 100);
   }
 
   let typeData = [];
   for (var key in types) {
-    typeData.push({name: key, value: Math.round(types[key]/t*100) });
+    typeData.push({ name: key, value: Math.round(types[key] / t * 100) });
   }
 
-let htmlOutput = '<div class="row wp-block-buttons is-content-justification-center">';
-htmlOutput += '<div class="col-xs-2 col-xs-offset-1"><span class="big-details">'+candidates.length+'</span><span class="small-title">nominees</span></div>'
-htmlOutput += '<div class="col-xs-1"><img src="https://dpg-website.s3.amazonaws.com/img/right-arrows.svg" style="height:50px; margin-top:20px; display:block"></div>'
-htmlOutput += '<div class="col-xs-2"><span class="big-details">'+vettedDPGs+'</span><span class="small-title">Digital<br/>Public<br/>Goods</span></div>'
-htmlOutput += '<div class="col-xs-4" id="venn"><span class="small-title">distribution by type</span></div></div>'
-htmlOutput += '<div class="row wp-block-buttons is-content-justification-center" style="margin-bottom:5em"><div class="col-xs-10" id="treemap"><span class="small-title">distribution by SDG</span><div id="treemap"></div></div>';
-htmlOutput += '</div>';
+  let htmlOutput = '<div class="row wp-block-buttons is-content-justification-center">';
+  htmlOutput += '<div class="col-xs-2 col-xs-offset-1"><span class="big-details">' + candidates.length + '</span><span class="small-title">nominees</span></div>'
+  htmlOutput += '<div class="col-xs-1"><img src="https://dpg-website.s3.amazonaws.com/img/right-arrows.svg" style="height:50px; margin-top:20px; display:block"></div>'
+  htmlOutput += '<div class="col-xs-2"><span class="big-details">' + vettedDPGs + '</span><span class="small-title">Digital<br/>Public<br/>Goods</span></div>'
+  htmlOutput += '<div class="col-xs-4" id="venn"><span class="small-title">distribution by type</span></div></div>'
+  htmlOutput += '<div class="row wp-block-buttons is-content-justification-center" style="margin-bottom:5em"><div class="col-xs-10" id="treemap"><span class="small-title">distribution by SDG</span><div id="treemap"></div></div>';
+  htmlOutput += '</div>';
 
-htmlOutput += `
+  htmlOutput += `
 
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js" charset="utf-8"></script>
@@ -170,13 +170,13 @@ var svg = d3.select("#treemap")
   .attr("preserveAspectRatio", "xMinYMin meet")
   .attr("viewBox", "0 0 " + width + " " + height)
 `
-htmlOutput += 'var data_sdg = '+JSON.stringify(sdgData)+';';
-htmlOutput += 'var data_type = '+JSON.stringify(typeData)+';';
-htmlOutput += 'var sdg_labels = '+JSON.stringify(SDGS)+';';
-htmlOutput += 'var sdg_colors = '+JSON.stringify(sdgColors)+';';
-htmlOutput += 'var sets = '+JSON.stringify(sets)+';';
+  htmlOutput += 'var data_sdg = ' + JSON.stringify(sdgData) + ';';
+  htmlOutput += 'var data_type = ' + JSON.stringify(typeData) + ';';
+  htmlOutput += 'var sdg_labels = ' + JSON.stringify(SDGS) + ';';
+  htmlOutput += 'var sdg_colors = ' + JSON.stringify(sdgColors) + ';';
+  htmlOutput += 'var sets = ' + JSON.stringify(sets) + ';';
 
-htmlOutput += `
+  htmlOutput += `
 
   // Give the data to this cluster layout:
   var root = d3.hierarchy(data_sdg).sum(function(d){ return d.value}) // Here the size of each leave is given in the 'value' field in input data
@@ -431,19 +431,19 @@ textLine.each(function (d) {
   `
   let formHtmlOutput = '<div id="form-content"> </div>';
 
-  replace({files: pathHtml, from: '<p>Placeholder</p>', to: htmlOutput}, (error, changedFiles) => {
+  replace({ files: pathHtml, from: '<p>Placeholder</p>', to: htmlOutput }, (error, changedFiles) => {
     if (error) {
       return console.error('Error occurred:', error);
     }
     console.log('Modified files:', changedFiles.join(', '));
 
-    replace({files: pathHtml, from: 'class="col-md-8 page-content-wrap  col-md-offset-2"', to: 'class="col-lg-12 page-content-wrap"'}, (error, changedFiles) => {
+    replace({ files: pathHtml, from: 'class="col-md-8 page-content-wrap  col-md-offset-2"', to: 'class="col-lg-12 page-content-wrap"' }, (error, changedFiles) => {
       if (error) {
         return console.error('Error occurred:', error);
       }
       console.log('Modified files:', changedFiles.join(', '));
 
-      replace({files: pathHtml, from: '</body>', to: endHtml}, (error, changedFiles) => {
+      replace({ files: pathHtml, from: '</body>', to: endHtml }, (error, changedFiles) => {
         if (error) {
           return console.error('Error occurred:', error);
         }
@@ -454,7 +454,7 @@ textLine.each(function (d) {
     });
   });
 
-  replace({files: pathFormHtml, from: '<p>Placeholder</p>', to: formHtmlOutput}, (error, changedFiles) => {
+  replace({ files: pathFormHtml, from: '<p>Placeholder</p>', to: formHtmlOutput }, (error, changedFiles) => {
     if (error) {
       return console.error('Error occurred:', error);
     }
@@ -462,7 +462,7 @@ textLine.each(function (d) {
     fs.copyFileSync(pathFormHtml, destFormHtml);
   });
 
-  replace({files: pathRoadmapHtml, from: '<p>Placeholder</p>', to: formHtmlOutput}, (error, changedFiles) => {
+  replace({ files: pathRoadmapHtml, from: '<p>Placeholder</p>', to: formHtmlOutput }, (error, changedFiles) => {
     if (error) {
       return console.error('Error occurred:', error);
     }
@@ -470,7 +470,7 @@ textLine.each(function (d) {
     fs.copyFileSync(pathRoadmapHtml, destRoadmapHtml);
   });
 
-  fs.readFile(pathMapHtml,'utf8',  function (err, html) {
+  fs.readFile(pathMapHtml, 'utf8', function (err, html) {
     if (err) {
       return console.error('Error occurred:', err);
     }
@@ -481,5 +481,5 @@ textLine.each(function (d) {
     fs.writeFileSync(destMapHtml + 'scripts.html', $.html($("#dpga-libs-js")) + $.html($("#dpga-main-js"))) // finds specific dpga scripts.
     fs.writeFileSync(destMapHtml + 'navbar.html', $("#page").html())
     fs.writeFileSync(destMapHtml + 'templateClassName.txt', $("body").attr('class'))
-  });    
+  });
 })
