@@ -1,8 +1,7 @@
 import React from 'react';
 import { ListItem } from './ListItem.js';
 
-export function List() {
-  const nominees = require('../nominees.json');
+export function List({nominees}) {
   return (
     <table className="table">
       <thead>

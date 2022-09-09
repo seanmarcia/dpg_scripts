@@ -402,16 +402,6 @@ textLine.each(function (d) {
 
   htmlOutput += `
     <div id="main-content" class="container clearfix" style="position: relative">
-      <div id="sidebar">
-        <div class="sidebar__inner" id="filters" style="position:relative">
-            
-        </div>
-      </div>
-      <div id="content" style="margin-left: 240px; min-height:700px">
-        <div id="mytable">
-                
-        </div>
-      </div>
     </div>
 `;
 

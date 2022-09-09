@@ -23,6 +23,7 @@ const types = {
 const stage = ["nominee", "DPG"];
 const sdgs = ["sdg1", "sdg2", "sdg3", "sdg4", "sdg5", "sdg6", "sdg7", "sdg8", "sdg9", "sdg10", "sdg11", "sdg12", "sdg13", "sdg14", "sdg15", "sdg16", "sdg17"];
 
+
 function trunc(str, n){
     return (str.length > n) ? str.substr(0, n-1) + '...' : str;
 };
@@ -59,11 +60,15 @@ export class Filters extends Component {
         concurrentClasses = elems[i].className.trim().split(' ').filter(function(a){ return a !== checkboxId });
       }
 
+      // ["class1", "class2", "class3", "content", "software"] => ["content", "software"]
+
       let intersectionSet1 = concurrentClasses.filter(i => Object.keys(types).includes(i));
+      //const keys = ["aimodel", "content", "data", "software", "standard"]
       let intersectionSet2 = concurrentClasses.filter(i => sdgs.includes(i));
       let intersectionSet3 = concurrentClasses.filter(i => stage.includes(i));
 
       let intersection1 = false;
+      //["content", "software"]
       for(let j=0; j < intersectionSet1.length; j++) {
         if(document.getElementById(intersectionSet1[j]+'-checkbox').checked){
           intersection1 = true;
@@ -85,7 +90,7 @@ export class Filters extends Component {
         }
       }
 
-      if (intersection1 && intersection2 && intersection3) {
+      if (true) {
         elems[i].style.display = 'table-row';
       } else {
         elems[i].style.display = 'none';
@@ -182,8 +187,8 @@ export class Filters extends Component {
                     type='checkbox'
                     id={`${label}-checkbox`}
                     label={trunc(types[label]['name'],25)}
-                    // defaultChecked
-                    checked={index % 2 === 0}
+                    defaultChecked
+                    // checked={index % 2 === 0}
                     onChange = {this.handleChange}
                   />
                   ))}
